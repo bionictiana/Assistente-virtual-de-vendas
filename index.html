@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Assistente Reposição MVP</title>
+<style>
+body{font-family: Arial, sans-serif; padding:20px}
+table{border-collapse: collapse; width:100%}
+th,td{border:1px solid #ddd; padding:8px}
+th{background:#f4f4f4}
+button{padding:6px 10px}
+</style>
+</head>
+<body>
+<h1>Assistente de Reposição (MVP)</h1>
+<p>Carrega a lista de produtos e testa previsões.</p>
+<div id="products"></div>
+
+
+<script>
+async function loadProducts(){
+const res = await fetch('/products');
+const prods = await res.json();
+const container = document.getElementById('products');
+let html = '<table><tr><th>SKU</th><th>Nome</th><th>Lead Time</th><th>Safety Stock</th><th>Reorder Point</th><th>Ações</th></tr>';
+for(const p of prods){
+html += `<tr>
+<td>${p.product_id}</td>
+<td>${p.name}</td>
+<td>${p.lead_time_days}</td>
+<td>${p.safety_stock}</td>
+<td>${p.reorder_point}</td>
+<td><button onclick="check('${p.product_id}', ${p.lead_time_days}, ${p.safety_stock})">Verificar</button></td>
+</tr>`
+}
+html += '</table>';
+container.innerHTML = html;
+}
+
+
+async function check(sku, lead, safety){
+const res = await fetch('/predict_restock', {
+method: 'POST',
+headers: {'Content-Type':'application/json'},
+body: JSON.stringify({sku:sku, lead_time_days: lead, safety_stock: safety})
+});
+const data = await res.json();
+alert(JSON.stringify(data, null, 2));
+}
+
+
+loadProducts();
+</script>
+</body>
+</html>

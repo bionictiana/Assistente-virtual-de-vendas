@@ -1,0 +1,12 @@
+assistente_stock_IA/
+│
+├── README.md
+├── requirements.txt
+├── train_model.py
+├── app.py
+├── sales.csv
+├── products.csv
+├── stock.csv
+├── templates/
+│ └── index.html
+└── report_final.md # Relatório (4 páginas)
